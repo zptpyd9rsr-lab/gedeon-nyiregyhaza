@@ -1,0 +1,1037 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Flow Society — Stratégiai Prezentáció</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --white: #f5f0e8;
+  --off-white: #d4cfc6;
+  --gray: #888;
+  --dark: #0a0a0a;
+  --black: #000;
+  --blue: #8bb8d4;
+  --blue-dim: rgba(139,184,212,0.15);
+  --blue-glow: rgba(139,184,212,0.3);
+  --font-main: 'Space Grotesk', sans-serif;
+  --font-mono: 'Space Mono', monospace;
+}
+
+html, body { height: 100%; overflow: hidden; }
+
+body {
+  font-family: var(--font-main);
+  background: var(--black);
+  color: var(--white);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Grain */
+.grain {
+  position: fixed; inset: 0; z-index: 9000; pointer-events: none; opacity: 0.04;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  background-size: 128px 128px;
+  animation: grain-shift 0.15s steps(1) infinite;
+}
+@keyframes grain-shift {
+  0% { transform: translate(0,0); } 25% { transform: translate(-2%,-3%); }
+  50% { transform: translate(3%,1%); } 75% { transform: translate(-1%,4%); }
+  100% { transform: translate(2%,-2%); }
+}
+
+/* Slide container */
+.deck {
+  position: relative; width: 100vw; height: 100vh;
+}
+
+.slide {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column; justify-content: center; align-items: center;
+  padding: 60px 80px;
+  opacity: 0; visibility: hidden;
+  transition: opacity 0.6s ease, transform 0.6s ease;
+  transform: translateY(30px);
+}
+.slide.active {
+  opacity: 1; visibility: visible; transform: translateY(0);
+}
+
+/* Navigation */
+.nav-bar {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 16px 40px;
+  background: linear-gradient(transparent, rgba(0,0,0,0.95));
+}
+.nav-bar .progress {
+  flex: 1; height: 2px; background: rgba(245,240,232,0.1); margin: 0 24px; border-radius: 1px; overflow: hidden;
+}
+.nav-bar .progress-fill {
+  height: 100%; background: var(--blue); transition: width 0.4s ease; border-radius: 1px;
+}
+.nav-btn {
+  background: none; border: 1px solid rgba(245,240,232,0.2); color: var(--white);
+  font-family: var(--font-mono); font-size: 12px; padding: 8px 20px;
+  cursor: pointer; transition: all 0.3s; letter-spacing: 1px;
+}
+.nav-btn:hover { border-color: var(--blue); color: var(--blue); }
+.slide-counter {
+  font-family: var(--font-mono); font-size: 11px; color: var(--gray); letter-spacing: 2px; min-width: 60px; text-align: center;
+}
+
+/* Top bar */
+.top-bar {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 20px 40px;
+}
+.top-logo { display: flex; align-items: center; gap: 12px; }
+.top-logo svg { width: 32px; height: 32px; }
+.top-logo-text { font-size: 13px; letter-spacing: 3px; text-transform: uppercase; font-weight: 500; }
+.top-tag {
+  font-family: var(--font-mono); font-size: 10px; color: var(--gray);
+  letter-spacing: 2px; text-transform: uppercase;
+}
+
+/* Typography */
+.slide h1 {
+  font-size: clamp(36px, 5vw, 72px); font-weight: 700; line-height: 1.1;
+  letter-spacing: -1px; text-align: center; margin-bottom: 24px;
+}
+.slide h2 {
+  font-size: clamp(28px, 3.5vw, 48px); font-weight: 600; line-height: 1.2;
+  letter-spacing: -0.5px; margin-bottom: 20px;
+}
+.slide h3 {
+  font-size: clamp(18px, 2vw, 28px); font-weight: 500; line-height: 1.3;
+  margin-bottom: 16px;
+}
+.slide p, .slide li {
+  font-size: clamp(14px, 1.4vw, 18px); line-height: 1.7; color: var(--off-white);
+  max-width: 700px;
+}
+.subtitle {
+  font-family: var(--font-mono); font-size: clamp(11px, 1vw, 14px);
+  color: var(--blue); letter-spacing: 4px; text-transform: uppercase;
+  margin-bottom: 16px;
+}
+.accent { color: var(--blue); }
+.dim { color: var(--gray); }
+
+/* Layout helpers */
+.cols { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; width: 100%; max-width: 1100px; align-items: start; }
+.cols-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 32px; width: 100%; max-width: 1100px; }
+.full-w { width: 100%; max-width: 1100px; }
+
+/* Cards */
+.card {
+  background: rgba(245,240,232,0.03); border: 1px solid rgba(245,240,232,0.08);
+  padding: 32px; border-radius: 2px; transition: all 0.3s;
+}
+.card:hover { border-color: var(--blue-glow); background: rgba(139,184,212,0.04); }
+.card h4 {
+  font-size: 16px; font-weight: 600; margin-bottom: 12px; letter-spacing: 0.5px;
+}
+.card p { font-size: 14px; line-height: 1.6; color: var(--off-white); }
+.card .card-num {
+  font-family: var(--font-mono); font-size: 11px; color: var(--blue); letter-spacing: 2px; margin-bottom: 12px;
+}
+
+/* Stats */
+.stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; width: 100%; max-width: 1000px; }
+.stat-box { text-align: center; padding: 28px 16px; border: 1px solid rgba(245,240,232,0.06); }
+.stat-num {
+  font-size: clamp(32px, 4vw, 56px); font-weight: 700; color: var(--blue);
+  font-family: var(--font-mono); line-height: 1;
+}
+.stat-label { font-size: 12px; color: var(--gray); margin-top: 8px; letter-spacing: 1px; text-transform: uppercase; }
+
+/* Timeline */
+.timeline { width: 100%; max-width: 900px; }
+.timeline-item {
+  display: flex; gap: 32px; padding: 24px 0;
+  border-bottom: 1px solid rgba(245,240,232,0.06);
+}
+.timeline-period {
+  font-family: var(--font-mono); font-size: 13px; color: var(--blue);
+  min-width: 120px; letter-spacing: 1px; padding-top: 2px;
+}
+.timeline-content h4 { font-size: 16px; font-weight: 600; margin-bottom: 6px; }
+.timeline-content p { font-size: 14px; color: var(--off-white); line-height: 1.6; }
+
+/* Chart */
+.bar-chart { display: flex; align-items: flex-end; gap: 16px; height: 200px; width: 100%; max-width: 700px; padding-top: 20px; }
+.bar-col { display: flex; flex-direction: column; align-items: center; flex: 1; height: 100%; justify-content: flex-end; }
+.bar {
+  width: 100%; border-radius: 2px 2px 0 0; transition: height 1s ease;
+  position: relative;
+}
+.bar-val {
+  position: absolute; top: -22px; left: 50%; transform: translateX(-50%);
+  font-family: var(--font-mono); font-size: 11px; color: var(--blue); white-space: nowrap;
+}
+.bar-label {
+  font-size: 11px; color: var(--gray); margin-top: 8px; text-align: center;
+  font-family: var(--font-mono); letter-spacing: 1px;
+}
+
+/* Donut chart */
+.donut-container { display: flex; align-items: center; gap: 40px; }
+.donut-legend { display: flex; flex-direction: column; gap: 12px; }
+.legend-item { display: flex; align-items: center; gap: 10px; font-size: 14px; }
+.legend-dot { width: 10px; height: 10px; border-radius: 50%; }
+
+/* Content table */
+.content-table { width: 100%; max-width: 1000px; border-collapse: collapse; }
+.content-table th {
+  font-family: var(--font-mono); font-size: 11px; color: var(--blue);
+  letter-spacing: 2px; text-transform: uppercase; text-align: left;
+  padding: 12px 16px; border-bottom: 1px solid rgba(139,184,212,0.3);
+}
+.content-table td {
+  font-size: 14px; padding: 14px 16px; color: var(--off-white);
+  border-bottom: 1px solid rgba(245,240,232,0.05);
+}
+.content-table tr:hover td { color: var(--white); background: rgba(139,184,212,0.03); }
+
+/* Tag */
+.tag {
+  display: inline-block; font-family: var(--font-mono); font-size: 10px;
+  letter-spacing: 1px; text-transform: uppercase;
+  padding: 4px 10px; border: 1px solid rgba(139,184,212,0.3);
+  color: var(--blue); margin: 2px;
+}
+
+/* Big quote */
+.big-quote {
+  font-size: clamp(24px, 3vw, 42px); font-weight: 300; font-style: italic;
+  text-align: center; max-width: 800px; line-height: 1.5;
+  color: var(--off-white);
+}
+.big-quote .accent { font-style: normal; font-weight: 600; }
+
+/* Merch grid */
+.merch-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; width: 100%; max-width: 800px; }
+.merch-item {
+  border: 1px solid rgba(245,240,232,0.08); padding: 32px 20px;
+  text-align: center; transition: all 0.3s;
+}
+.merch-item:hover { border-color: var(--blue); }
+.merch-icon { font-size: 36px; margin-bottom: 12px; filter: grayscale(1) brightness(1.2); }
+.merch-name { font-size: 13px; font-weight: 500; letter-spacing: 1px; }
+
+/* Funnel */
+.funnel { width: 100%; max-width: 600px; }
+.funnel-step {
+  display: flex; align-items: center; gap: 20px; padding: 16px 0;
+}
+.funnel-bar {
+  height: 40px; background: linear-gradient(90deg, var(--blue), rgba(139,184,212,0.2));
+  border-radius: 2px; display: flex; align-items: center; padding-left: 16px;
+  font-family: var(--font-mono); font-size: 12px; color: var(--white); font-weight: 600;
+}
+.funnel-label { font-size: 13px; color: var(--off-white); min-width: 140px; text-align: right; }
+
+/* Responsive */
+@media (max-width: 768px) {
+  .slide { padding: 80px 24px 80px; }
+  .cols, .cols-3 { grid-template-columns: 1fr; gap: 24px; }
+  .stat-grid { grid-template-columns: 1fr 1fr; }
+  .merch-grid { grid-template-columns: 1fr 1fr; }
+  .nav-bar { padding: 12px 20px; }
+  .top-bar { padding: 12px 20px; }
+  .timeline-item { flex-direction: column; gap: 8px; }
+  .bar-chart { height: 150px; }
+}
+
+/* Animations */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.slide.active .animate {
+  animation: fadeInUp 0.6s ease forwards;
+  opacity: 0;
+}
+.slide.active .animate:nth-child(1) { animation-delay: 0.1s; }
+.slide.active .animate:nth-child(2) { animation-delay: 0.2s; }
+.slide.active .animate:nth-child(3) { animation-delay: 0.3s; }
+.slide.active .animate:nth-child(4) { animation-delay: 0.4s; }
+.slide.active .animate:nth-child(5) { animation-delay: 0.5s; }
+.slide.active .animate:nth-child(6) { animation-delay: 0.6s; }
+.slide.active .animate:nth-child(7) { animation-delay: 0.7s; }
+</style>
+</head>
+<body>
+
+<div class="grain"></div>
+
+<!-- Top Bar -->
+<div class="top-bar">
+  <div class="top-logo">
+    <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M40 40 C38 34 34 22 28 18 C22 14 16 18 16 24 C16 30 22 36 40 40 C34 38 22 34 16 34 C10 34 8 40 12 44 C16 48 26 46 40 40 C34 42 22 48 18 54 C14 60 18 64 24 62 C30 60 34 52 40 40 C42 46 46 58 52 62 C58 66 64 62 64 56 C64 50 58 44 40 40 C46 42 58 46 64 46 C70 46 72 40 68 36 C64 32 54 34 40 40 C46 38 58 34 62 28 C66 22 62 16 56 18 C50 20 44 30 40 40Z" stroke="#8bb8d4" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+    </svg>
+    <span class="top-logo-text">Flow Society</span>
+  </div>
+  <span class="top-tag">Stratégiai terv — 2025</span>
+</div>
+
+<div class="deck" id="deck">
+
+  <!-- SLIDE 1: Title -->
+  <div class="slide active" data-slide="0">
+    <div class="subtitle animate">Stratégiai Prezentáció</div>
+    <h1 class="animate">Flow Society<br><span class="accent">Running Club</span></h1>
+    <p class="animate" style="text-align:center; margin-top: 8px;">
+      Nyíregyháza legnagyobb futóközösségének felépítése — a nulláról.
+    </p>
+    <div style="margin-top: 40px; display:flex; gap:16px;" class="animate">
+      <span class="tag">Közösség</span>
+      <span class="tag">Brand</span>
+      <span class="tag">Social Media</span>
+      <span class="tag">Merch</span>
+    </div>
+  </div>
+
+  <!-- SLIDE 2: Víziónk -->
+  <div class="slide" data-slide="1">
+    <div class="subtitle animate">01 — Vízió</div>
+    <h2 class="animate">„Nem csak futunk.<br><span class="accent">Együtt futunk.</span>"</h2>
+    <div class="cols animate" style="margin-top: 32px;">
+      <div>
+        <h3>A küldetés</h3>
+        <p>Nyíregyháza legerősebb futóközösségét építjük fel, ahol a kezdők és haladók egyaránt otthon érzik magukat. A Flow Society nem csupán futóklub — ez egy életérzés, egy közösség, egy brand.</p>
+      </div>
+      <div>
+        <h3>A stílus</h3>
+        <p>Modern és vintage találkozása. Fekete-fehér dominancia kék akcentussal. Minimalista, mégis karakteres vizuális identitás, ami kitűnik a social media zajos világából.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 3: Piaci lehetőség -->
+  <div class="slide" data-slide="2">
+    <div class="subtitle animate">02 — Piaci helyzet</div>
+    <h2 class="animate">Miért <span class="accent">most</span> és miért <span class="accent">Nyíregyháza</span>?</h2>
+    <div class="stat-grid animate" style="margin-top: 32px;">
+      <div class="stat-box">
+        <div class="stat-num">117k</div>
+        <div class="stat-label">Nyh. lakosság</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-num">+34%</div>
+        <div class="stat-label">Futás trend HU</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-num">0</div>
+        <div class="stat-label">Hasonló brand</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-num">18-35</div>
+        <div class="stat-label">Célcsoport kor</div>
+      </div>
+    </div>
+    <p class="animate" style="text-align:center; margin-top: 24px;">
+      Nyíregyházán nincs erős, brandelt futóközösség. A futás népszerűsége évről évre nő Magyarországon — ez a mi pillanatunk.
+    </p>
+  </div>
+
+  <!-- SLIDE 4: Célcsoport -->
+  <div class="slide" data-slide="3">
+    <div class="subtitle animate">03 — Célcsoport</div>
+    <h2 class="animate">Kiket <span class="accent">szólítunk meg</span>?</h2>
+    <div class="cols-3 animate" style="margin-top: 24px;">
+      <div class="card">
+        <div class="card-num">01</div>
+        <h4>Kezdő futók</h4>
+        <p>18-30 év, először próbálják ki a futást, közösségre vágynak, nem akarnak egyedül kezdeni. Instagram-aktívak.</p>
+      </div>
+      <div class="card">
+        <div class="card-num">02</div>
+        <h4>Rendszeres futók</h4>
+        <p>25-40 év, már futnak rendszeresen, de keresnek egy közösséget és motivációt. Versenyzés iránt is érdeklődnek.</p>
+      </div>
+      <div class="card">
+        <div class="card-num">03</div>
+        <h4>Életmód-tudatos fiatalok</h4>
+        <p>18-28 év, fitness és egészséges életmód érdekli őket, a futás "cool" és trendy szegmensébe tartoznak.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 5: Platform stratégia -->
+  <div class="slide" data-slide="4">
+    <div class="subtitle animate">04 — Platformok</div>
+    <h2 class="animate">Social Media <span class="accent">Ökoszisztéma</span></h2>
+    <div class="cols-3 animate" style="margin-top: 24px;">
+      <div class="card" style="border-color: var(--blue-glow);">
+        <div class="card-num">★ Elsődleges</div>
+        <h4>Instagram</h4>
+        <p>A fő platform. Itt van a célközönségünk. Rendszeres posztok, Reels, Stories, közösségépítés. Heti 4-5 poszt + napi Story.</p>
+        <div style="margin-top: 12px;">
+          <span class="tag">Reels</span>
+          <span class="tag">Feed</span>
+          <span class="tag">Stories</span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-num">Másodlagos</div>
+        <h4>TikTok</h4>
+        <p>Rövid, dinamikus videók a fiatalabb közönségnek. Havi 2-4 videó, ami az Instagramra is mehet Reelsként.</p>
+        <div style="margin-top: 12px;">
+          <span class="tag">Videó</span>
+          <span class="tag">Trend</span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-num">Kiegészítő</div>
+        <h4>Facebook</h4>
+        <p>Eseményekhez, csoportépítéshez, helyi közösségi hirdetésekhez. Facebook Group a tagoknak. Heti 2-3 poszt.</p>
+        <div style="margin-top: 12px;">
+          <span class="tag">Events</span>
+          <span class="tag">Group</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 6: Content stratégia -->
+  <div class="slide" data-slide="5">
+    <div class="subtitle animate">05 — Content stratégia</div>
+    <h2 class="animate">Mit <span class="accent">posztolunk</span>?</h2>
+    <table class="content-table animate" style="margin-top: 24px;">
+      <thead>
+        <tr>
+          <th>Típus</th>
+          <th>Platform</th>
+          <th>Gyakoriság</th>
+          <th>Cél</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Futós fotók / recap</strong></td>
+          <td>Instagram, FB</td>
+          <td>Heti 2-3×</td>
+          <td>Közösség megmutatása</td>
+        </tr>
+        <tr>
+          <td><strong>„Tudtad-e?" edukáció</strong></td>
+          <td>Instagram</td>
+          <td>Heti 1-2×</td>
+          <td>Értékadás, elérés</td>
+        </tr>
+        <tr>
+          <td><strong>Reels / TikTok videók</strong></td>
+          <td>IG, TikTok</td>
+          <td>Havi 2-4×</td>
+          <td>Elérés, virális potenciál</td>
+        </tr>
+        <tr>
+          <td><strong>Stories (napi)</strong></td>
+          <td>Instagram</td>
+          <td>Napi</td>
+          <td>Jelenlét, behind-the-scenes</td>
+        </tr>
+        <tr>
+          <td><strong>Motivációs idézetek</strong></td>
+          <td>Instagram</td>
+          <td>Heti 1×</td>
+          <td>Engagement, mentés</td>
+        </tr>
+        <tr>
+          <td><strong>Esemény bejelentés</strong></td>
+          <td>IG, FB</td>
+          <td>Alkalom szerint</td>
+          <td>Részvétel növelés</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- SLIDE 7: Heti content naptár -->
+  <div class="slide" data-slide="6">
+    <div class="subtitle animate">06 — Content naptár</div>
+    <h2 class="animate">Egy tipikus <span class="accent">hét</span></h2>
+    <div class="full-w animate" style="margin-top: 24px;">
+      <table class="content-table">
+        <thead>
+          <tr>
+            <th>Nap</th>
+            <th>Instagram</th>
+            <th>Story</th>
+            <th>TikTok / Reels</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Hétfő</strong></td>
+            <td>Motivációs idézet poszt</td>
+            <td>„Heti futás countdown"</td>
+            <td>—</td>
+          </tr>
+          <tr>
+            <td><strong>Kedd</strong></td>
+            <td>—</td>
+            <td>Behind-the-scenes</td>
+            <td>—</td>
+          </tr>
+          <tr>
+            <td><strong>Szerda</strong></td>
+            <td>„Tudtad-e?" poszt</td>
+            <td>Szavazás / kérdés</td>
+            <td>—</td>
+          </tr>
+          <tr>
+            <td><strong>Csütörtök</strong></td>
+            <td>Futós fotó / közösség</td>
+            <td>Közös futás recap</td>
+            <td>Videó (ha van)</td>
+          </tr>
+          <tr>
+            <td><strong>Péntek</strong></td>
+            <td>—</td>
+            <td>Hétvégi futás bejelentő</td>
+            <td>—</td>
+          </tr>
+          <tr>
+            <td><strong>Szombat</strong></td>
+            <td>Közös futás recap fotók</td>
+            <td>Live / élő story</td>
+            <td>—</td>
+          </tr>
+          <tr>
+            <td><strong>Vasárnap</strong></td>
+            <td>Heti összefoglaló / stat</td>
+            <td>Pihenőnap vibe</td>
+            <td>Reels recap (havi 1×)</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- SLIDE 8: Növekedési terv -->
+  <div class="slide" data-slide="7">
+    <div class="subtitle animate">07 — Növekedési terv</div>
+    <h2 class="animate">A felépítés <span class="accent">4 fázisa</span></h2>
+    <div class="timeline animate" style="margin-top: 24px;">
+      <div class="timeline-item">
+        <div class="timeline-period">1-2. hónap</div>
+        <div class="timeline-content">
+          <h4>Alapozás — „Seed"</h4>
+          <p>Profilok létrehozása (IG, TikTok, FB). Vizuális identitás véglegesítése. Első 10-15 poszt feltöltése. Ismerősök, barátok bevonása. Első közös futás megszervezése.</p>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-period">3-4. hónap</div>
+        <div class="timeline-content">
+          <h4>Növekedés — „Growth"</h4>
+          <p>Rendszeres posztolás beindítása. Első fizetett hirdetések (IG). Helyi influencerekkel, futókkal együttműködés. Első merch (matricák). Cél: 300+ követő.</p>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-period">5-8. hónap</div>
+        <div class="timeline-content">
+          <h4>Közösségépítés — „Community"</h4>
+          <p>Rendszeres heti futások fix időpontban. Pólók, sapkák bevezetése. Első nagyobb esemény/futóverseny. Cél: 1000+ követő, 30+ aktív futó.</p>
+        </div>
+      </div>
+      <div class="timeline-item" style="border-bottom: none;">
+        <div class="timeline-period">9-12. hónap</div>
+        <div class="timeline-content">
+          <h4>Brand — „Establish"</h4>
+          <p>Flow Society = Nyíregyháza futóklub. Szponzori megkeresések. Nagyobb rendezvények. Cél: 2500+ követő, 50+ aktív tag, helyi ismertség.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 9: Követő növekedés chart -->
+  <div class="slide" data-slide="8">
+    <div class="subtitle animate">08 — Növekedési előrejelzés</div>
+    <h2 class="animate">Instagram követők — <span class="accent">12 hónap</span></h2>
+    <div class="bar-chart animate" style="margin-top: 32px;" id="growth-chart">
+      <div class="bar-col">
+        <div class="bar" style="height: 8%; background: linear-gradient(to top, var(--blue), rgba(139,184,212,0.4));">
+          <span class="bar-val">50</span>
+        </div>
+        <span class="bar-label">1. hó</span>
+      </div>
+      <div class="bar-col">
+        <div class="bar" style="height: 12%; background: linear-gradient(to top, var(--blue), rgba(139,184,212,0.4));">
+          <span class="bar-val">120</span>
+        </div>
+        <span class="bar-label">2. hó</span>
+      </div>
+      <div class="bar-col">
+        <div class="bar" style="height: 18%; background: linear-gradient(to top, var(--blue), rgba(139,184,212,0.4));">
+          <span class="bar-val">250</span>
+        </div>
+        <span class="bar-label">3. hó</span>
+      </div>
+      <div class="bar-col">
+        <div class="bar" style="height: 25%; background: linear-gradient(to top, var(--blue), rgba(139,184,212,0.4));">
+          <span class="bar-val">380</span>
+        </div>
+        <span class="bar-label">4. hó</span>
+      </div>
+      <div class="bar-col">
+        <div class="bar" style="height: 33%; background: linear-gradient(to top, var(--blue), rgba(139,184,212,0.4));">
+          <span class="bar-val">500</span>
+        </div>
+        <span class="bar-label">5. hó</span>
+      </div>
+      <div class="bar-col">
+        <div class="bar" style="height: 42%; background: linear-gradient(to top, var(--blue), rgba(139,184,212,0.4));">
+          <span class="bar-val">650</span>
+        </div>
+        <span class="bar-label">6. hó</span>
+      </div>
+      <div class="bar-col">
+        <div class="bar" style="height: 50%; background: linear-gradient(to top, var(--blue), rgba(139,184,212,0.4));">
+          <span class="bar-val">800</span>
+        </div>
+        <span class="bar-label">7. hó</span>
+      </div>
+      <div class="bar-col">
+        <div class="bar" style="height: 58%; background: linear-gradient(to top, var(--blue), rgba(139,184,212,0.4));">
+          <span class="bar-val">950</span>
+        </div>
+        <span class="bar-label">8. hó</span>
+      </div>
+      <div class="bar-col">
+        <div class="bar" style="height: 67%; background: linear-gradient(to top, var(--blue), rgba(139,184,212,0.4));">
+          <span class="bar-val">1.2k</span>
+        </div>
+        <span class="bar-label">9. hó</span>
+      </div>
+      <div class="bar-col">
+        <div class="bar" style="height: 75%; background: linear-gradient(to top, var(--blue), rgba(139,184,212,0.4));">
+          <span class="bar-val">1.5k</span>
+        </div>
+        <span class="bar-label">10. hó</span>
+      </div>
+      <div class="bar-col">
+        <div class="bar" style="height: 85%; background: linear-gradient(to top, var(--blue), rgba(139,184,212,0.4));">
+          <span class="bar-val">2k</span>
+        </div>
+        <span class="bar-label">11. hó</span>
+      </div>
+      <div class="bar-col">
+        <div class="bar" style="height: 100%; background: linear-gradient(to top, var(--blue), rgba(139,184,212,0.4));">
+          <span class="bar-val">2.5k+</span>
+        </div>
+        <span class="bar-label">12. hó</span>
+      </div>
+    </div>
+    <p class="animate dim" style="text-align:center; margin-top: 20px; font-size: 12px; font-family: var(--font-mono);">
+      * Organikus + fizetett hirdetéssel kombinált becslés
+    </p>
+  </div>
+
+  <!-- SLIDE 10: Hirdetési stratégia -->
+  <div class="slide" data-slide="9">
+    <div class="subtitle animate">09 — Fizetett hirdetések</div>
+    <h2 class="animate">Paid Ads <span class="accent">Stratégia</span></h2>
+    <div class="cols animate" style="margin-top: 24px;">
+      <div>
+        <div class="card" style="margin-bottom: 20px;">
+          <div class="card-num">Instagram Ads</div>
+          <h4>Fő csatorna</h4>
+          <p>Havi 15.000-30.000 Ft költségvetés. Célzás: Nyíregyháza + 15km, 18-35 év, futás / fitness / egészséges életmód érdeklődés. Promoted Reels + Feed posztok.</p>
+        </div>
+        <div class="card">
+          <div class="card-num">Facebook Ads</div>
+          <h4>Esemény promóció</h4>
+          <p>Alkalmi hirdetések események előtt. Havi 5.000-10.000 Ft. Lokális célzás, esemény-típusú hirdetések.</p>
+        </div>
+      </div>
+      <div>
+        <div class="card" style="margin-bottom: 20px;">
+          <div class="card-num">Hirdetés típusok</div>
+          <h4>Formátumok</h4>
+          <p>1. Reels hirdetés — legmagasabb elérés<br>2. Carousel poszt — „Tudtad-e?" típus<br>3. Story hirdetés — CTA: „Csatlakozz"<br>4. Esemény boost — futások előtt</p>
+        </div>
+        <div class="card">
+          <div class="card-num">Összesen / hó</div>
+          <h4 style="color: var(--blue);">20.000 – 40.000 Ft</h4>
+          <p>Reálisan elérhető büdzsé, ami egy helyi futóklubhoz nagyon erős eredményeket tud hozni célzott kampányokkal.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 11: Brand & Merch -->
+  <div class="slide" data-slide="10">
+    <div class="subtitle animate">10 — Brand & Merch</div>
+    <h2 class="animate">Termékek és <span class="accent">márkaépítés</span></h2>
+    <div class="merch-grid animate" style="margin-top: 32px;">
+      <div class="merch-item">
+        <div class="merch-icon">🏷️</div>
+        <div class="merch-name">Matricák</div>
+        <p style="font-size: 12px; color: var(--gray); margin-top: 8px;">1. fázis — ingyen osztás futásokon</p>
+      </div>
+      <div class="merch-item">
+        <div class="merch-icon">👕</div>
+        <div class="merch-name">Pólók</div>
+        <p style="font-size: 12px; color: var(--gray); margin-top: 8px;">2. fázis — fekete/fehér, minimalista design</p>
+      </div>
+      <div class="merch-item">
+        <div class="merch-icon">🧢</div>
+        <div class="merch-name">Sapkák</div>
+        <p style="font-size: 12px; color: var(--gray); margin-top: 8px;">2. fázis — futósapka logóval</p>
+      </div>
+      <div class="merch-item">
+        <div class="merch-icon">🧥</div>
+        <div class="merch-name">Pulcsik / Limitált pólók</div>
+        <p style="font-size: 12px; color: var(--gray); margin-top: 8px;">3. fázis — premium, limitált szériák</p>
+      </div>
+    </div>
+    <p class="animate" style="text-align:center; margin-top: 28px; max-width: 600px;">
+      A merch nem csak bevétel — <span class="accent">mozgó reklám</span>. Minden póló, sapka és matrica Nyíregyháza utcáin a Flow Society-t hirdeti.
+    </p>
+  </div>
+
+  <!-- SLIDE 12: Conversion funnel -->
+  <div class="slide" data-slide="11">
+    <div class="subtitle animate">11 — Konverziós tölcsér</div>
+    <h2 class="animate">Hogyan lesz egy <span class="accent">követőből tag</span>?</h2>
+    <div class="funnel animate" style="margin-top: 32px;">
+      <div class="funnel-step">
+        <div class="funnel-label">Felfedezés</div>
+        <div class="funnel-bar" style="width: 100%;">Instagram / TikTok / szájhagyomány</div>
+      </div>
+      <div class="funnel-step">
+        <div class="funnel-label">Érdeklődés</div>
+        <div class="funnel-bar" style="width: 82%;">Profil megtekintés, posztok böngészés</div>
+      </div>
+      <div class="funnel-step">
+        <div class="funnel-label">Követés</div>
+        <div class="funnel-bar" style="width: 60%;">Követővé válik, Story-kat néz</div>
+      </div>
+      <div class="funnel-step">
+        <div class="funnel-label">Első futás</div>
+        <div class="funnel-bar" style="width: 35%;">Eljön az első közös futásra</div>
+      </div>
+      <div class="funnel-step">
+        <div class="funnel-label">Aktív tag</div>
+        <div class="funnel-bar" style="width: 18%;">Rendszeresen jár, merch-et vesz</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 13: Content ötletek -->
+  <div class="slide" data-slide="12">
+    <div class="subtitle animate">12 — Content ötletek</div>
+    <h2 class="animate">Poszt <span class="accent">ötlettár</span></h2>
+    <div class="cols animate" style="margin-top: 24px;">
+      <div>
+        <div class="card" style="margin-bottom: 16px;">
+          <h4>📊 „Tudtad-e?" széria</h4>
+          <p>• A futás 30%-kal csökkenti a stressz szintet<br>• 5 km futás = ~350 kcal égetés<br>• Közösen futni 2x motiválóbb<br>• A reggeli futás javítja a koncentrációt</p>
+        </div>
+        <div class="card">
+          <h4>🎬 Videó ötletek</h4>
+          <p>• „Első futásom a Flow Society-vel"<br>• Nyíregyháza legjobb futóútvonalai<br>• 30 napos futás kihívás<br>• Tag bemutató interjúk</p>
+        </div>
+      </div>
+      <div>
+        <div class="card" style="margin-bottom: 16px;">
+          <h4>📸 Fotó posztok</h4>
+          <p>• Közös futás recap (fekete-fehér)<br>• „Run of the week" — legjobb futó<br>• Útvonal térkép + statisztika<br>• Merch bemutatók (flat lay)</p>
+        </div>
+        <div class="card">
+          <h4>💬 Engagement posztok</h4>
+          <p>• „Hány km-t futottál ezen a héten?"<br>• „Melyik a kedvenc futózenéd?"<br>• Szavazások futóútvonalakról<br>• „Jelöld meg a futópartnerred"</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 14: KPI-k -->
+  <div class="slide" data-slide="13">
+    <div class="subtitle animate">13 — Mérőszámok</div>
+    <h2 class="animate">Hogyan mérjük a <span class="accent">sikert</span>?</h2>
+    <div class="cols-3 animate" style="margin-top: 24px;">
+      <div class="card">
+        <div class="card-num">Social</div>
+        <h4>Online KPI-k</h4>
+        <p>• Instagram követők<br>• Engagement rate (cél: >5%)<br>• Reels elérések<br>• Story megtekintések<br>• Profil látogatások</p>
+      </div>
+      <div class="card">
+        <div class="card-num">Közösség</div>
+        <h4>Offline KPI-k</h4>
+        <p>• Aktív futók száma / futás<br>• Visszatérő tagok aránya<br>• Új csatlakozók / hónap<br>• Esemény résztvevők</p>
+      </div>
+      <div class="card">
+        <div class="card-num">Brand</div>
+        <h4>Brand KPI-k</h4>
+        <p>• Merch értékesítés<br>• Szponzori megkeresések<br>• Média megjelenések<br>• Helyi ismertség (kérdőív)</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 15: 12 havi célok összesítő -->
+  <div class="slide" data-slide="14">
+    <div class="subtitle animate">14 — 12 havi célok</div>
+    <h2 class="animate">Mérföldkövek <span class="accent">összesítő</span></h2>
+    <div class="stat-grid animate" style="margin-top: 32px;">
+      <div class="stat-box">
+        <div class="stat-num">2.5k+</div>
+        <div class="stat-label">IG Követők</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-num">50+</div>
+        <div class="stat-label">Aktív tagok</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-num">200+</div>
+        <div class="stat-label">Posztok</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-num">48</div>
+        <div class="stat-label">Közös futás</div>
+      </div>
+    </div>
+    <div class="cols animate" style="margin-top: 32px;">
+      <div class="card">
+        <h4>Ami biztosan kell</h4>
+        <p>✓ Konzisztens posztolás heti 4-5×<br>✓ Min. 2 videó / hónap<br>✓ Heti 1 közös futás fix időpont<br>✓ Havi hirdetési büdzsé (20-40k Ft)<br>✓ Merch fokozatos bevezetése</p>
+      </div>
+      <div class="card">
+        <h4>Ami a különbséget hozza</h4>
+        <p>★ Egyedi vizuális stílus (B&W + kék)<br>★ Közösségi érzés — nem edző, hanem társak<br>★ Lokális fókusz — Nyíregyháza büszkeség<br>★ Autentikus tartalom, nem stock fotók<br>★ A Flow Society = egy életérzés</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 16: 3 hónap reális kép -->
+  <div class="slide" data-slide="15">
+    <div class="subtitle animate">15 — Reális kép: 3 hónap</div>
+    <h2 class="animate">Az első <span class="accent">3 hónap</span> — amit valósan elérhetünk</h2>
+    <div class="cols animate" style="margin-top: 24px;">
+      <div>
+        <div class="stat-grid" style="grid-template-columns: 1fr 1fr; gap: 16px;">
+          <div class="stat-box">
+            <div class="stat-num">200+</div>
+            <div class="stat-label">IG követő</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-num">10-15</div>
+            <div class="stat-label">Futó / alkalom</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-num">30+</div>
+            <div class="stat-label">Poszt</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-num">6-8</div>
+            <div class="stat-label">Videó</div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="card">
+          <h4>Amit 3 hónap alatt elérünk</h4>
+          <p>
+            ✓ Működő IG, TikTok, FB profilok<br>
+            ✓ Felismerhető vizuális identitás<br>
+            ✓ Heti rendszeres közös futás<br>
+            ✓ Első visszatérő tagok (mag csapat)<br>
+            ✓ Első matricák kiosztva<br>
+            ✓ Első fizetett hirdetés lefuttatva<br>
+            ✓ 2-3 helyi futóval együttműködés
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 17: 6 hónap reális kép -->
+  <div class="slide" data-slide="16">
+    <div class="subtitle animate">16 — Reális kép: 6 hónap</div>
+    <h2 class="animate">Fél év után — <span class="accent">kinőttük a kezdeteket</span></h2>
+    <div class="cols animate" style="margin-top: 24px;">
+      <div>
+        <div class="stat-grid" style="grid-template-columns: 1fr 1fr; gap: 16px;">
+          <div class="stat-box">
+            <div class="stat-num">600+</div>
+            <div class="stat-label">IG követő</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-num">20-30</div>
+            <div class="stat-label">Futó / alkalom</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-num">100+</div>
+            <div class="stat-label">Poszt</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-num">5%+</div>
+            <div class="stat-label">Engagement</div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="card">
+          <h4>Hol tartunk fél év után</h4>
+          <p>
+            ✓ Fix heti futás — az emberek már várják<br>
+            ✓ Első pólók és sapkák megrendelve<br>
+            ✓ Nyíregyházán kezdik ismerni a nevet<br>
+            ✓ 3-5 poszt / hét rutin kialakítva<br>
+            ✓ Első nagyobb közös futóesemény<br>
+            ✓ Reels videók 1000+ elérés átlag<br>
+            ✓ Organikus növekedés beindul
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 18: 1 év reális kép -->
+  <div class="slide" data-slide="17">
+    <div class="subtitle animate">17 — Reális kép: 1 év</div>
+    <h2 class="animate">12 hónap — <span class="accent">a brand él és lélegzik</span></h2>
+    <div class="cols animate" style="margin-top: 24px;">
+      <div>
+        <div class="stat-grid" style="grid-template-columns: 1fr 1fr; gap: 16px;">
+          <div class="stat-box">
+            <div class="stat-num">2k+</div>
+            <div class="stat-label">IG követő</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-num">40-60</div>
+            <div class="stat-label">Aktív tag</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-num">200+</div>
+            <div class="stat-label">Poszt</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-num">3+</div>
+            <div class="stat-label">Szponzor</div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="card">
+          <h4>1 év után — a nagy kép</h4>
+          <p>
+            ✓ Flow Society = Nyíregyháza futóklubja<br>
+            ✓ Teljes merch lánc (matrica→póló→sapka→pulcsi)<br>
+            ✓ Szponzori bevétel (futóbolt, sportmárkák)<br>
+            ✓ Saját futóverseny/esemény szervezés<br>
+            ✓ Helyi média megjelenések<br>
+            ✓ TikTok videók 5-10k elérés<br>
+            ✓ Közösség, ami önmagát építi tovább
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 19: Mi kell a sikerhez -->
+  <div class="slide" data-slide="18">
+    <div class="subtitle animate">18 — A siker kulcsa</div>
+    <h2 class="animate">Mi kell ahhoz, hogy <span class="accent">tényleg működjön</span>?</h2>
+    <div class="cols-3 animate" style="margin-top: 24px;">
+      <div class="card">
+        <div class="card-num">Konzisztencia</div>
+        <h4>Nem az intenzitás, hanem a rendszeresség</h4>
+        <p>Jobb heti 4 poszt 12 hónapon át, mint napi 3 poszt 2 hétig. A közösségi média algoritmusa a rendszerességet jutalmazza.</p>
+      </div>
+      <div class="card">
+        <div class="card-num">Autentikusság</div>
+        <h4>Valódi emberek, valódi futások</h4>
+        <p>Nem stock fotók, nem tökéletes világ. Izzadság, reggeli futások, téli hideg — ez az, ami hiteles és ami bevonzza az embereket.</p>
+      </div>
+      <div class="card">
+        <div class="card-num">Közösség</div>
+        <h4>Mindenkit befogadunk</h4>
+        <p>Nem számít a tempó. Nem számít a táv. Az számít, hogy ott vagy. Ez a Flow Society filozófiája — és ez az, ami virálissá teszi.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 20: Closing -->
+  <div class="slide" data-slide="19">
+    <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg" class="animate" style="width: 64px; height: 64px; margin-bottom: 32px;">
+      <path d="M40 40 C38 34 34 22 28 18 C22 14 16 18 16 24 C16 30 22 36 40 40 C34 38 22 34 16 34 C10 34 8 40 12 44 C16 48 26 46 40 40 C34 42 22 48 18 54 C14 60 18 64 24 62 C30 60 34 52 40 40 C42 46 46 58 52 62 C58 66 64 62 64 56 C64 50 58 44 40 40 C46 42 58 46 64 46 C70 46 72 40 68 36 C64 32 54 34 40 40 C46 38 58 34 62 28 C66 22 62 16 56 18 C50 20 44 30 40 40Z" stroke="#8bb8d4" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+    </svg>
+    <p class="big-quote animate">
+      „A futás egyedül is jó.<br>De <span class="accent">együtt</span> — az más szint."
+    </p>
+    <div class="subtitle animate" style="margin-top: 40px;">Flow Society Running Club</div>
+    <p class="animate dim" style="font-family: var(--font-mono); font-size: 12px; margin-top: 8px;">Nyíregyháza — 2025</p>
+  </div>
+
+</div>
+
+<!-- Navigation -->
+<div class="nav-bar">
+  <button class="nav-btn" id="prev-btn">← Előző</button>
+  <div class="progress">
+    <div class="progress-fill" id="progress-fill"></div>
+  </div>
+  <span class="slide-counter" id="slide-counter">01 / 16</span>
+  <div class="progress">
+    <div class="progress-fill" id="progress-fill2"></div>
+  </div>
+  <button class="nav-btn" id="next-btn">Következő →</button>
+</div>
+
+<script>
+const slides = document.querySelectorAll('.slide');
+const total = slides.length;
+let current = 0;
+
+function goTo(n) {
+  if (n < 0 || n >= total) return;
+  slides[current].classList.remove('active');
+  current = n;
+  const s = slides[current];
+  s.querySelectorAll('.animate').forEach(el => {
+    el.style.animation = 'none';
+  });
+  s.classList.add('active');
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      s.querySelectorAll('.animate').forEach(el => {
+        el.style.animation = '';
+      });
+    });
+  });
+  document.getElementById('slide-counter').textContent =
+    String(current + 1).padStart(2, '0') + ' / ' + String(total).padStart(2, '0');
+  const pct = ((current + 1) / total) * 100;
+  document.getElementById('progress-fill').style.width = pct + '%';
+  document.getElementById('progress-fill2').style.width = pct + '%';
+}
+
+document.getElementById('prev-btn').addEventListener('click', () => goTo(current - 1));
+document.getElementById('next-btn').addEventListener('click', () => goTo(current + 1));
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); goTo(current + 1); }
+  if (e.key === 'ArrowLeft') { e.preventDefault(); goTo(current - 1); }
+});
+
+let touchStartX = 0;
+document.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; });
+document.addEventListener('touchend', e => {
+  const diff = touchStartX - e.changedTouches[0].screenX;
+  if (Math.abs(diff) > 50) { diff > 0 ? goTo(current + 1) : goTo(current - 1); }
+});
+
+goTo(0);
+</script>
+
+</body>
+</html>
