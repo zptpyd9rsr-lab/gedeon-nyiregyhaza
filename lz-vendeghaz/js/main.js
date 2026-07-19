@@ -1,6 +1,26 @@
 // L+Z Vendégházak — közös interakciók: nav, lightbox, scroll-reveal
 
 document.addEventListener('DOMContentLoaded', () => {
+  /* Hero stat count-up */
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  document.querySelectorAll('[data-count]').forEach(el => {
+    const target = parseInt(el.getAttribute('data-count'), 10);
+    const suffix = el.getAttribute('data-suffix') || '';
+    if (reduceMotion) {
+      el.textContent = target + suffix;
+      return;
+    }
+    const duration = 1400;
+    const start = performance.now();
+    function tick(now) {
+      const p = Math.min((now - start) / duration, 1);
+      const eased = 1 - Math.pow(1 - p, 3);
+      el.textContent = Math.round(target * eased) + suffix;
+      if (p < 1) requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+  });
+
   /* Mobile nav toggle */
   const toggle = document.querySelector('.nav-toggle');
   const links = document.querySelector('.nav-links');

@@ -150,6 +150,13 @@ button{font-family:inherit;cursor:pointer;}
   background:linear-gradient(180deg,rgba(24,14,9,0.35) 0%,rgba(24,14,9,0.55) 55%,rgba(24,14,9,0.94) 100%);
 }
 .hero-inner{position:relative;z-index:2;padding-bottom:80px;width:100%;}
+@keyframes heroEnter{from{opacity:0;transform:translateY(22px);}to{opacity:1;transform:translateY(0);}}
+.hero-enter{opacity:0;animation:heroEnter .8s cubic-bezier(0.16,1,0.3,1) forwards;}
+.hero-inner .eyebrow.hero-enter{animation-delay:.05s;}
+.hero-inner h1.hero-enter{animation-delay:.18s;}
+.hero-inner .hero-sub.hero-enter{animation-delay:.32s;}
+.hero-inner .hero-actions.hero-enter{animation-delay:.46s;}
+.hero-inner .hero-stats.hero-enter{animation-delay:.58s;}
 .hero h1{color:#fff;max-width:820px;}
 .hero-sub{max-width:560px;font-size:1.15rem;color:var(--text-light-muted);margin-bottom:32px;}
 .hero-actions{display:flex;gap:16px;flex-wrap:wrap;}
